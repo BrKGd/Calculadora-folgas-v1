@@ -74,7 +74,9 @@
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script> 
 <script>
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("service-worker.js");
+    navigator.serviceWorker.register("service-worker.js").then((reg) => {
+      reg.update();
+    });
   }
 </script>
 <script src="script.js"></script>
