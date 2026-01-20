@@ -1,4 +1,4 @@
-const CACHE_NAME = "escala-folgas-v2";
+const CACHE_NAME = "escala-folgas-v5";
 const BASE_PATH = "/Calculadora-folgas-v1/";
 
 const FILES_TO_CACHE = [
