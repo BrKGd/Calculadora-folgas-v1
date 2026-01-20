@@ -272,12 +272,71 @@ function exportarExcel() {
 }
 
 function exportarPDF() {
-  if (/Android|iPhone/i.test(navigator.userAgent)) {
-    mostrarToast("PDF funciona melhor no notebook");
+  const { jsPDF } = window.jspdf;
+
+  const calendario = document.getElementById("calendario");
+  if (!calendario || calendario.classList.contains("hidden")) {
+    mostrarToast("Calcule a escala antes de exportar o PDF");
     return;
   }
 
-  window.print();
+  // ====== CRIAR TÍTULO DINÂMICO ======
+  const dataInicial = new Date(document.getElementById("dataFolga").value);
+  const qtdMeses = parseInt(document.getElementById("qtdMeses").value);
+
+  const meses = [
+    "Janeiro","Fevereiro","Março","Abril","Maio","Junho",
+    "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"
+  ];
+
+  const mesInicio = meses[dataInicial.getMonth()];
+  const anoInicio = dataInicial.getFullYear();
+
+  const dataFinal = new Date(dataInicial);
+  dataFinal.setMonth(dataFinal.getMonth() + qtdMeses - 1);
+
+  const mesFim = meses[dataFinal.getMonth()];
+  const anoFim = dataFinal.getFullYear();
+
+  const tituloTexto =
+    anoInicio === anoFim
+      ? `Calendário de folgas de ${mesInicio} a ${mesFim} de ${anoInicio}`
+      : `Calendário de folgas de ${mesInicio}/${anoInicio} a ${mesFim}/${anoFim}`;
+
+  // ====== CONTAINER TEMPORÁRIO ======
+  const containerPDF = document.createElement("div");
+  containerPDF.style.width = "800px";
+  containerPDF.style.padding = "24px";
+  containerPDF.style.fontFamily = "Arial";
+
+  containerPDF.innerHTML = `
+    <h1 style="text-align:center; color:#c62828; margin-bottom:20px;">
+      ${tituloTexto}
+    </h1>
+  `;
+
+  // Clonar calendário
+  const calendarioClone = calendario.cloneNode(true);
+  calendarioClone.style.display = "grid";
+  calendarioClone.style.gridTemplateColumns = "repeat(2, 1fr)";
+  calendarioClone.style.gap = "20px";
+
+  containerPDF.appendChild(calendarioClone);
+  document.body.appendChild(containerPDF);
+
+  // ====== GERAR PDF ======
+  const pdf = new jsPDF("p", "mm", "a4");
+
+  pdf.html(containerPDF, {
+    x: 10,
+    y: 10,
+    width: 190,
+    windowWidth: 800,
+    callback: function (doc) {
+      doc.save("calendario-folgas.pdf");
+      document.body.removeChild(containerPDF);
+    }
+  });
 }
 
 function baixarArquivo(conteudo, nomeArquivo, tipo) {
