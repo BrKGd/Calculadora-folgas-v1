@@ -1,4 +1,4 @@
-const VERSION = "v16"; // mude a cada release
+const VERSION = "v14"; // <-- mude a cada release
 const CACHE_NAME = `escala-folgas-${VERSION}`;
 
 const FILES_TO_CACHE = [
@@ -12,62 +12,77 @@ const FILES_TO_CACHE = [
 ];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil((async () => {
-    const cache = await caches.open(CACHE_NAME);
-    await cache.addAll(FILES_TO_CACHE);
-  })());
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(FILES_TO_CACHE))
+  );
   self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil((async () => {
-    const keys = await caches.keys();
-    await Promise.all(keys.map((k) => (k !== CACHE_NAME ? caches.delete(k) : null)));
-    await self.clients.claim();
-  })());
+  event.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(keys.map((k) => (k !== CACHE_NAME ? caches.delete(k) : null)))
+    )
+  );
+  self.clients.claim();
 });
 
+// comando para aplicar update imediatamente
 self.addEventListener("message", (event) => {
   if (event.data && event.data.type === "SKIP_WAITING") {
     self.skipWaiting();
   }
 });
 
+async function networkFirst(req) {
+  try {
+    const fresh = await fetch(req, { cache: "no-store" });
+    const cache = await caches.open(CACHE_NAME);
+    cache.put(req, fresh.clone());
+    return fresh;
+  } catch (e) {
+    const cached = await caches.match(req);
+    return cached || Response.error();
+  }
+}
+
+async function cacheFirst(req) {
+  const cached = await caches.match(req);
+  if (cached) return cached;
+
+  const fresh = await fetch(req);
+  const cache = await caches.open(CACHE_NAME);
+  cache.put(req, fresh.clone());
+  return fresh;
+}
+
 self.addEventListener("fetch", (event) => {
   const req = event.request;
-  if (req.method !== "GET") return;
-
   const url = new URL(req.url);
 
-  // 1) Navegação (HTML): NETWORK FIRST (pra sempre puxar versão nova)
+  // 1) HTML / navegação: sempre rede primeiro (você já fazia isso)
   if (req.mode === "navigate") {
-    event.respondWith((async () => {
-      try {
-        // bypass no cache HTTP do navegador
-        return await fetch(req, { cache: "no-store" });
-      } catch (e) {
-        const cache = await caches.open(CACHE_NAME);
-        return (await cache.match("./index.html")) || Response.error();
-      }
-    })());
+    event.respondWith(
+      fetch(req, { cache: "no-store" }).catch(() => caches.match("./index.html"))
+    );
     return;
   }
 
-  // 2) Arquivos do seu domínio: STALE-WHILE-REVALIDATE (cache rápido + atualiza)
-  if (url.origin === self.location.origin) {
-    event.respondWith((async () => {
-      const cache = await caches.open(CACHE_NAME);
-      const cached = await cache.match(req);
+  // somente arquivos do seu domínio
+  if (url.origin !== self.location.origin) return;
 
-      const fetchPromise = fetch(req)
-        .then((res) => {
-          // só salva respostas válidas
-          if (res && res.status === 200) cache.put(req, res.clone());
-          return res;
-        })
-        .catch(() => cached);
+  const path = url.pathname.toLowerCase();
 
-      return cached || fetchPromise;
-    })());
+  // 2) CSS/JS/JSON: NETWORK FIRST (pega atualização sem precisar limpar histórico)
+  if (
+    path.endsWith(".css") ||
+    path.endsWith(".js") ||
+    path.endsWith(".json")
+  ) {
+    event.respondWith(networkFirst(req));
+    return;
   }
+
+  // 3) Imagens e resto: CACHE FIRST (mais rápido)
+  event.respondWith(cacheFirst(req));
 });
