@@ -50,18 +50,23 @@
   </select>
 </div>
 
-  <button id="btnShare" type="button" onclick="compartilharWhatsApp()" class="hidden">
-  Compartilhar
+ <div class="acoes">
+
+  <button id="btnExcel" type="button" onclick="exportarExcel()" class="btn-icone hidden" aria-label="Exportar Excel" title="Exportar Excel">
+    <img src="icons/saveExcel.png" alt="Exportar Excel">
   </button>
-  <div class="acoes">
-  <button id="btnExcel" type="button" onclick="exportarExcel()" class="hidden">
-    Exportar Excel
+
+  <button id="btnPDF" type="button" onclick="exportarPDF()" class="btn-icone hidden" aria-label="Exportar PDF" title="Exportar PDF">
+    <img src="icons/savePdf.png" alt="Exportar PDF">
   </button>
-  <button id="btnPDF" type="button" onclick="exportarPDF()" class="hidden">
-    Exportar PDF
+
+  <button id="btnShare" type="button" onclick="compartilharWhatsApp()" class="btn-icone hidden" aria-label="Compartilhar" title="Compartilhar">
+    <img src="icons/saveCompartilhar.png" alt="Compartilhar">
   </button>
-  <button type="button" onclick="calcular()">Calcular</button>
-  </div>
+   
+  <button type="button" onclick="calcular()" class="btn-calcular">Calcular</button>
+</div>
+
 
   <h2 id="tituloFolgas" class="hidden">Próximas folgas</h2>
   <div id="cardsMeses" class="hidden"></div>
