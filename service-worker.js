@@ -2,7 +2,7 @@ const CACHE_NAME = "escala-folgas-v1";
 
 const FILES_TO_CACHE = [
   "./",
-  "./calendario.html",
+  "./index.html",
   "./style.css",
   "./script.js",
   "./manifest.json"
