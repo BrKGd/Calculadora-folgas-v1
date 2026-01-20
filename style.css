@@ -725,3 +725,54 @@ select {
     border-radius: 16px;
   }
 }
+
+/* MOBILE FIRST */
+@media (max-width: 768px) {
+
+  body {
+    font-size: 16px;
+  }
+
+  .container {
+    padding: 16px;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  input,
+  select,
+  button {
+    font-size: 16px;
+    height: 48px;
+  }
+
+  .calendario-grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .meses-grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+}
+
+/* TABLET */
+@media (min-width: 769px) and (max-width: 1024px) {
+
+  .meses-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+}
+
+/* DESKTOP */
+@media (min-width: 1025px) {
+
+  .meses-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+}
