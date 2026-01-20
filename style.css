@@ -320,20 +320,38 @@ button:hover {
    BADGE DE QUANTIDADE
    ========================= */
 .mes-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  /* deixa mais largo (pílula) */
+  min-width: 45px;        /* aumenta a largura mínima */
+  height: 20px;           /* altura fixa = centralização perfeita */
+  padding: 0 12px;        /* aumenta a “barriguinha” da pílula */
+
+  border-radius: 999px;
   background: #c62828;
   color: #fff;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 999px;
-  margin-left: 8px;
+
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;         /* evita o texto “subir/descer” */
+  letter-spacing: 0.2px;
 }
 
-/* HEADER DO CARD */
+/* garante alinhamento do texto do card com o badge */
 .mes-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* opcional: melhora o conjunto badge + setinha ▼ */
+.mes-header > span:last-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* =========================
