@@ -60,13 +60,6 @@ input:focus {
   border-color: #c62828;
 }
 
-#btnPDF{
-  background-color: #1565c0;
-}
-#btnExcel{
-  background-color: #2e7d32;
-}
-
 /* BOTÃO */
 button {
   margin-top: 20px;
@@ -428,7 +421,7 @@ select {
 .acoes {
   display: flex;
   align-items: center;      /* alinha verticalmente no centro */
-  justify-content: flex-start; /* tudo para a esquerda */
+  justify-content: flex-end; /* tudo para a esquerda */
   gap: 12px;
   margin-top: 16px;
 }
@@ -457,6 +450,11 @@ select {
   align-items: center;   /* centraliza vertical */
   justify-content: center; /* centraliza horizontal dentro do quadrado */
   cursor: pointer;
+}
+
+.btn-icone:hover {
+  box-shadow: 0 10px 24px rgba(0,0,0,0.10);
+  transform: scale(1.2);
 }
 
 .btn-icone img {
