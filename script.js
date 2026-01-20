@@ -207,201 +207,276 @@ function exportarExcel() {
 }
 
 /* Exportar PDF */
-   function exportarPDF() {
-    const btnPDF = document.getElementById("btnPDF");
-  
-    const calendario = document.getElementById("calendario");
-    if (!calendario || calendario.classList.contains("hidden")) {
-      showToast("Calcule a escala antes de exportar");
-      return;
-    }
-  
-    // Evita duplo clique
-    btnPDF.disabled = true;
-    const oldText = btnPDF.textContent;
-    btnPDF.textContent = "Gerando PDF...";
-  
-    setTimeout(() => {
-      try {
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF("p", "mm", "a4");
-  
-        const pageW = 210;
-        const pageH = 297;
-  
-        // ===== TÍTULO DINÂMICO =====
-        const dataInicialStr = document.getElementById("dataFolga").value;
-        const qtdMeses = parseInt(document.getElementById("qtdMeses").value, 10);
-  
-        const mesesNomes = [
-          "Janeiro","Fevereiro","Março","Abril","Maio","Junho",
-          "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"
-        ];
-  
-        const dataInicial = new Date(dataInicialStr + "T00:00:00");
-        const dataFinal = new Date(dataInicial);
-        dataFinal.setMonth(dataFinal.getMonth() + (qtdMeses - 1));
-  
-        const titulo =
-          dataInicial.getFullYear() === dataFinal.getFullYear()
-            ? `Calendário de folgas de ${mesesNomes[dataInicial.getMonth()]} a ${mesesNomes[dataFinal.getMonth()]} de ${dataFinal.getFullYear()}`
-            : `Calendário de folgas de ${mesesNomes[dataInicial.getMonth()]}/${dataInicial.getFullYear()} a ${mesesNomes[dataFinal.getMonth()]}/${dataFinal.getFullYear()}`;
-  
-        pdf.setFont("helvetica", "bold");
-        pdf.setFontSize(13);
-        pdf.setTextColor(198, 40, 40);
-        pdf.text(titulo, pageW / 2, 12, { align: "center" });
-  
-        // ===== PEGAR MESES DO DOM (mais fiel ao app) =====
-        const mesesDOM = Array.from(calendario.querySelectorAll(".calendario-mes")).slice(0, 12);
-        if (!mesesDOM.length) {
-          showToast("Calendário não encontrado para exportar");
-          btnPDF.disabled = false;
-          btnPDF.textContent = oldText;
-          return;
-        }
-  
-        // ===== GRID 3x4 (ocupando a página) =====
-        const cols = 3;
-        const rows = 4;
-  
-        const marginX = 6;        // menor margem
-        const topY = 16;          // área do título já usada
-        const marginBottom = 6;
-        const gap = 2;            // espaço entre cards
-  
-        const usableH = pageH - topY - marginBottom;
-        const usableW = pageW - marginX * 2;
-  
-        const cardW = (usableW - gap * (cols - 1)) / cols;
-        const cardH = (usableH - gap * (rows - 1)) / rows;
-  
-        // ===== FUNÇÃO DESENHAR UM MINI CALENDÁRIO (7x6) =====
-        const drawMiniCalendar = (x, y, w, h, tituloMes, cells) => {
-          // Card (bem discreto)
-          pdf.setDrawColor(230);
-          pdf.setLineWidth(0.3);
-          pdf.roundedRect(x, y, w, h, 2, 2);
-        
-          // Título do mês
-          pdf.setFont("helvetica", "bold");
-          pdf.setFontSize(9);
-          pdf.setTextColor(198, 40, 40);
-          pdf.text(tituloMes, x + w / 2, y + 5.2, { align: "center" });
-        
-          // ===== CABEÇALHO DOS DIAS (D S T Q Q S S) =====
-          const diasCab = ["D", "S", "T", "Q", "Q", "S", "S"];
-        
-          const pad = 1.6;
-        
-          // Ajustes finos de layout do card
-          const headerY = y + 8.2;        // linha do cabeçalho
-          const gridTop = y + 10.0;       // grid começa abaixo do cabeçalho
-          const gridH = h - 11.2;         // altura restante pro grid (6 linhas)
-          const gridW = w - pad * 2;
-        
-          const cellW = gridW / 7;
-          const cellH = gridH / 6;
-        
-          // Linha do cabeçalho
-          pdf.setFont("helvetica", "bold");
-          pdf.setFontSize(6.2);
-          pdf.setTextColor(120, 120, 120);
-        
-          for (let c = 0; c < 7; c++) {
-            const cx = x + pad + c * cellW;
-            pdf.text(diasCab[c], cx + cellW / 2, headerY, { align: "center" });
-          }
-        
-          // Pequena linha separadora (bem leve)
-          pdf.setDrawColor(235);
-          pdf.setLineWidth(0.25);
-          pdf.line(x + pad, headerY + 1.3, x + w - pad, headerY + 1.3);
-        
-          // ===== GRID 7x6 =====
-          pdf.setFont("helvetica", "bold");
-          pdf.setFontSize(6);
-        
-          for (let i = 0; i < 42; i++) {
-            const r = Math.floor(i / 7);
-            const c = i % 7;
-        
-            const cx = x + pad + c * cellW;
-            const cy = gridTop + r * cellH;
-        
-            const cell = cells[i];
-            const isVazio = cell.classList.contains("vazio");
-            const isHoje = cell.classList.contains("hoje");
-            const isFolga = cell.classList.contains("folga");
-            const isTrabalho = cell.classList.contains("trabalho");
-        
-            if (isVazio) continue;
-        
-            if (isHoje) {
-              pdf.setDrawColor(198, 40, 40);
-              pdf.setLineWidth(0.6);
-              pdf.roundedRect(cx + 0.25, cy + 0.2, cellW - 0.5, cellH - 0.4, 1.3, 1.3);
-              pdf.setLineWidth(0.3);
-              pdf.setDrawColor(230);
-              pdf.setTextColor(198, 40, 40);
-            } else if (isFolga) {
-              pdf.setFillColor(232, 245, 233);
-              pdf.setTextColor(46, 125, 50);
-              pdf.roundedRect(cx + 0.25, cy + 0.2, cellW - 0.5, cellH - 0.4, 1.3, 1.3, "F");
-            } else if (isTrabalho) {
-              pdf.setFillColor(253, 236, 234);
-              pdf.setTextColor(183, 28, 28);
-              pdf.roundedRect(cx + 0.25, cy + 0.2, cellW - 0.5, cellH - 0.4, 1.3, 1.3, "F");
-            } else {
-              pdf.setFillColor(245, 245, 245);
-              pdf.setTextColor(120, 120, 120);
-              pdf.roundedRect(cx + 0.25, cy + 0.2, cellW - 0.5, cellH - 0.4, 1.3, 1.3, "F");
-            }
-        
-            const diaTxt = String(cell.textContent || "").trim();
-            pdf.text(diaTxt, cx + cellW / 2, cy + cellH / 2 + 1.2, { align: "center" });
-        
-            if (isHoje) {
-              pdf.setFontSize(5.8);
-              pdf.text("Hoje", cx + cellW / 2, cy + 2.7, { align: "center" });
-              pdf.setFontSize(6);
-            }
-          }
-        };        
-  
-        // ===== DESENHAR OS 12 CARDS =====
-        mesesDOM.forEach((mesEl, idx) => {
-          const col = idx % cols;
-          const row = Math.floor(idx / cols);
-  
-          const x = marginX + col * (cardW + gap);
-          const y = topY + row * (cardH + gap);
-  
-          const tituloMes = (mesEl.querySelector("h3")?.textContent || "").trim();
-          const cells = Array.from(mesEl.querySelectorAll(".calendario-grid .dia"));
-  
-          // Garante 42 células (7x6). Se tiver menos, completa com vazios.
-          while (cells.length < 42) {
-            const fake = document.createElement("div");
-            fake.className = "dia vazio";
-            fake.textContent = "";
-            cells.push(fake);
-          }
-  
-          drawMiniCalendar(x, y, cardW, cardH, tituloMes, cells);
-        });
-  
-        pdf.save("calendario-folgas.pdf");
-        showToast("PDF gerado com sucesso");
-      } catch (e) {
-        console.error(e);
-        showToast("Erro ao gerar PDF");
-      } finally {
-        btnPDF.disabled = false;
-        btnPDF.textContent = oldText;
-      }
-    }, 60);
+function exportarPDF() {
+  const { jsPDF } = window.jspdf;
+
+  // ===== validações =====
+  const dataInput = document.getElementById("dataFolga")?.value;
+  const mesesSelect = document.getElementById("qtdMeses")?.value;
+  const tipoEscalaRaw = document.getElementById("tipoEscala")?.value;
+
+  if (!dataInput) return showToast("Selecione a data inicial da folga");
+  if (!mesesSelect) return showToast("Selecione a quantidade de meses");
+  if (!tipoEscalaRaw) return showToast("Selecione o tipo de escala");
+
+  const qtdMeses = parseInt(mesesSelect, 10);
+  if (!qtdMeses || qtdMeses < 1) return showToast("Quantidade de meses inválida");
+
+  // ===== dados da escala (mesma regra do app) =====
+  const dataBase = normalizarData(new Date(dataInput + "T00:00:00"));
+  const hoje = normalizarData(new Date());
+
+  const escalaCodigo = extrairCodigoEscala(tipoEscalaRaw);
+  if (!escalaCodigo) return showToast("Tipo de escala inválido. Selecione novamente.");
+
+  const escala = obterEscala(escalaCodigo);
+  if (!escala) return showToast("Tipo de escala não reconhecido.");
+
+  const { diasTrabalho, diasFolga } = escala;
+  const ciclo = diasTrabalho + diasFolga;
+  if (!ciclo) return showToast("Erro ao calcular a escala. Verifique o tipo selecionado.");
+
+  const isFolga = (data) => {
+    if (isFolgaFixa(data)) return true; // prioridade
+    const diff = diasEntre(dataBase, data);
+    const pos = mod(diff, ciclo);
+    return pos < diasFolga;
+  };
+
+  // ===== título dinâmico =====
+  const MESES = [
+    "Janeiro","Fevereiro","Março","Abril","Maio","Junho",
+    "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"
+  ];
+
+  const dataFinal = new Date(dataBase);
+  dataFinal.setMonth(dataFinal.getMonth() + (qtdMeses - 1));
+
+  const mesInicio = MESES[dataBase.getMonth()];
+  const anoInicio = dataBase.getFullYear();
+  const mesFim = MESES[dataFinal.getMonth()];
+  const anoFim = dataFinal.getFullYear();
+
+  const tituloTexto =
+    (anoInicio === anoFim)
+      ? `Calendário de folgas de ${mesInicio} a ${mesFim} de ${anoInicio}`
+      : `Calendário de folgas de ${mesInicio}/${anoInicio} a ${mesFim}/${anoFim}`;
+
+  // ===== UI: evita travar / clique duplo =====
+  const btn = document.getElementById("btnPDF");
+  const oldText = btn?.textContent;
+  if (btn) {
+    btn.disabled = true;
+    btn.style.opacity = "0.75";
+    btn.textContent = "Gerando PDF...";
   }
+  showToast("Gerando PDF...");
+
+  // ===== PDF (leve) =====
+  const doc = new jsPDF({ orientation: "p", unit: "mm", format: "a4" });
+  const pageW = doc.internal.pageSize.getWidth();
+  const pageH = doc.internal.pageSize.getHeight();
+
+  const margin = 8;
+  const gutter = 3.2;
+
+  // Cores (tema do app)
+  const RED = { r: 198, g: 40, b: 40 };    // #c62828
+  const RED_BG = { r: 253, g: 236, b: 234 }; // #fdecea
+  const GREEN = { r: 46, g: 125, b: 50 };  // #2e7d32
+  const GREEN_BG = { r: 232, g: 245, b: 233 }; // #e8f5e9
+  const NEUTRAL_BG = { r: 245, g: 246, b: 248 }; // leve
+  const BORDER = { r: 225, g: 227, b: 232 };
+  const TEXT_GRAY = { r: 95, g: 99, b: 104 };
+
+  // ===== helpers de desenho =====
+  const setRGB = (c) => doc.setTextColor(c.r, c.g, c.b);
+  const fillRGB = (c) => doc.setFillColor(c.r, c.g, c.b);
+  const drawBorder = (c) => doc.setDrawColor(c.r, c.g, c.b);
+
+  function drawCenteredText(text, x, y, maxW) {
+    doc.text(text, x + maxW / 2, y, { align: "center" });
+  }
+
+  function drawMiniCalendar(x, y, cardW, cardH, year, monthIndex) {
+    // Card
+    drawBorder(BORDER);
+    doc.setLineWidth(0.35);
+    doc.roundedRect(x, y, cardW, cardH, 3, 3, "S");
+
+    // ===== espaçamentos (ajustados) =====
+    const padX = 4.0;
+    const padTop = 5.0;
+
+    const titleToWeek = 4.0;   // título -> cabeçalho
+    const weekToLine = 2.2;    // cabeçalho -> linha
+    const lineToGrid = 3.2;    // linha -> grid
+
+    const gapX = 1.35;         // espaço entre células (X)
+    const gapY = 1.35;         // espaço entre células (Y)
+
+    // Título do mês
+    const title = `${MESES[monthIndex]} de ${year}`;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9);
+    setRGB(RED);
+    const titleY = y + padTop;
+    drawCenteredText(title, x, titleY, cardW);
+
+    // Cabeçalho D S T Q Q S S
+    const weekLetters = ["D", "S", "T", "Q", "Q", "S", "S"];
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(7);
+    setRGB(TEXT_GRAY);
+
+    const weekY = titleY + titleToWeek;
+
+    const gridX = x + padX;
+    const gridW = cardW - padX * 2;
+
+    const colW = gridW / 7;
+    for (let i = 0; i < 7; i++) {
+      const cx = gridX + colW * i + colW / 2;
+      doc.text(weekLetters[i], cx, weekY, { align: "center" });
+    }
+
+    // Linha abaixo do cabeçalho
+    const lineY = weekY + weekToLine;
+    doc.setLineWidth(0.25);
+    drawBorder(BORDER);
+    doc.line(gridX, lineY, gridX + gridW, lineY);
+
+    // Grid
+    const gridY = lineY + lineToGrid;
+
+    const bottomPad = 4.0;
+    const gridH = (y + cardH - bottomPad) - gridY;
+
+    const cellW = (gridW - gapX * 6) / 7;
+    const cellH = (gridH - gapY * 5) / 6;
+
+    const firstDay = new Date(year, monthIndex, 1);
+    const lastDay = new Date(year, monthIndex + 1, 0).getDate();
+    const startOffset = firstDay.getDay(); // 0=Dom ... 6=Sáb
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(7);
+
+    for (let d = 1; d <= lastDay; d++) {
+      const idx = startOffset + (d - 1);
+      const col = idx % 7;
+      const row = Math.floor(idx / 7);
+
+      const cx = gridX + col * (cellW + gapX);
+      const cy = gridY + row * (cellH + gapY);
+
+      const dateObj = normalizarData(new Date(year, monthIndex, d));
+      const isToday = dateObj.getTime() === hoje.getTime();
+
+      // passado neutro, hoje destaque, futuro colorido
+      let bg = NEUTRAL_BG;
+      let fg = TEXT_GRAY;
+
+      if (isToday) {
+        bg = { r: 255, g: 255, b: 255 };
+        fg = RED;
+      } else if (dateObj > hoje) {
+        const folga = isFolga(dateObj);
+        bg = folga ? GREEN_BG : RED_BG;
+        fg = folga ? GREEN : RED;
+      }
+
+      // retângulo do dia
+      fillRGB(bg);
+      drawBorder(BORDER);
+      doc.setLineWidth(0.25);
+      doc.roundedRect(cx, cy, cellW, cellH, 2.2, 2.2, "FD");
+
+      // destaque HOJE (borda vermelha + texto ajustado pra baixo)
+      if (isToday) {
+        doc.setLineWidth(0.6);
+        drawBorder(RED);
+        doc.roundedRect(cx, cy, cellW, cellH, 2.2, 2.2, "S");
+      }
+
+      // texto
+      setRGB(fg);
+
+      if (isToday) {
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(5);
+
+        // "Hoje" mais pra baixo (melhora leitura)
+        doc.text("Hoje", cx + cellW / 2, cy + cellH * 0.38, { align: "center" });
+
+        doc.setFont("helvetica");
+        doc.setFontSize(6.5);
+        doc.text(String(d), cx + cellW / 2, cy + cellH * 0.72, { align: "center" });
+      } else {
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(8);
+        doc.text(String(d), cx + cellW / 2, cy + cellH * 0.63, { align: "center" });
+      }
+    }
+  }
+
+  // ===== layout: 3 colunas x 4 linhas (12 por página) =====
+  const cols = 3;
+  const rows = 4;
+  const titleH = 14;
+
+  // título
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(16);
+  setRGB(RED);
+  drawCenteredText(tituloTexto, 0, margin + 6, pageW);
+
+  // área do grid
+  const gridTop = margin + titleH;
+  const gridAreaH = pageH - margin - gridTop;
+  const gridAreaW = pageW - margin * 2;
+
+  const cardW = (gridAreaW - gutter * (cols - 1)) / cols;
+  const cardH = (gridAreaH - gutter * (rows - 1)) / rows;
+
+  // desenha meses (paginando se passar de 12)
+  let monthCursor = new Date(dataBase.getFullYear(), dataBase.getMonth(), 1);
+  for (let i = 0; i < qtdMeses; i++) {
+    const pageIndex = Math.floor(i / (cols * rows));
+    const posInPage = i % (cols * rows);
+
+    if (posInPage === 0 && pageIndex > 0) {
+      doc.addPage();
+      // repetir título em cada página
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(16);
+      setRGB(RED);
+      drawCenteredText(tituloTexto, 0, margin + 6, pageW);
+    }
+
+    const r = Math.floor(posInPage / cols);
+    const c = posInPage % cols;
+
+    const x = margin + c * (cardW + gutter);
+    const y = gridTop + r * (cardH + gutter);
+
+    drawMiniCalendar(x, y, cardW, cardH, monthCursor.getFullYear(), monthCursor.getMonth());
+
+    monthCursor.setMonth(monthCursor.getMonth() + 1);
+  }
+
+  // ===== salvar =====
+  const nomeArquivo = "calendario-folgas.pdf";
+  doc.save(nomeArquivo);
+
+  // ===== UI restore =====
+  if (btn) {
+    btn.disabled = false;
+    btn.style.opacity = "";
+    btn.textContent = oldText || "Exportar PDF";
+  }
+  showToast("PDF Gerado: " + nomeArquivo);
+}
    
 /* Toast */
 function showToast(msg) {
