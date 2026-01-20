@@ -60,6 +60,13 @@ input:focus {
   border-color: #c62828;
 }
 
+#btnPDF{
+  background-color: #1565c0;
+}
+#btnExcel{
+  background-color: #2e7d32;
+}
+
 /* BOTÃO */
 button {
   margin-top: 20px;
