@@ -420,6 +420,80 @@ select {
   border: 1px solid #ddd;
   background: #fff;
 }
+/* =========================
+   AÇÕES (BOTÕES)
+   ========================= */
+
+.acoes {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+/* Botão Calcular continua "normal" */
+.btn-calcular {
+  flex: 1;
+  height: 54px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  border: none;
+  background: #c62828;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Botões por ícone */
+.btn-icone {
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  border: 1px solid #eee;
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.btn-icone img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  display: block;
+}
+
+.btn-icone:active {
+  transform: scale(0.98);
+}
+
+.btn-icone:hover {
+  box-shadow: 0 10px 24px rgba(0,0,0,0.10);
+}
+
+/* MOBILE: Calcular ocupa linha toda, ícones vão abaixo */
+@media (max-width: 600px) {
+  .acoes {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .btn-calcular {
+    width: 100%;
+    flex: 0 0 100%;
+  }
+
+  .btn-icone {
+    flex: 1;
+    height: 52px;
+    min-width: 0;
+  }
+}
 
 /* MOBILE */
 @media (max-width: 600px) {
