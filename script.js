@@ -133,8 +133,87 @@ function calcular() {
   document.getElementById("calendario").classList.remove("hidden");
   document.getElementById("btnExcel").classList.remove("hidden");
   document.getElementById("btnPDF").classList.remove("hidden");
+  document.getElementById("btnShare").classList.remove("hidden");
+  document.getElementById("btnShare").classList.add("fade-in");
+
 
   showToast("Escala calculada");
+}
+
+function gerarTextoEscalaParaCompartilhar() {
+  if (!window.dadosEscala || !window.dadosEscala.length) return "";
+
+  // título igual o do PDF (intervalo)
+  const dataInicialStr = document.getElementById("dataFolga").value;
+  const qtdMeses = parseInt(document.getElementById("qtdMeses").value, 10);
+
+  const dataInicial = new Date(dataInicialStr + "T00:00:00");
+  const mesesNome = [
+    "Janeiro","Fevereiro","Março","Abril","Maio","Junho",
+    "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"
+  ];
+
+  const dataFinal = new Date(dataInicial);
+  dataFinal.setMonth(dataFinal.getMonth() + (qtdMeses - 1));
+
+  const mesInicio = mesesNome[dataInicial.getMonth()];
+  const anoInicio = dataInicial.getFullYear();
+  const mesFim = mesesNome[dataFinal.getMonth()];
+  const anoFim = dataFinal.getFullYear();
+
+  const titulo =
+    (anoInicio === anoFim)
+      ? `📅 Calendário de folgas de ${mesInicio} a ${mesFim} de ${anoInicio}`
+      : `📅 Calendário de folgas de ${mesInicio}/${anoInicio} a ${mesFim}/${anoFim}`;
+
+  // montar texto só com FOLGAS (mais útil no WhatsApp)
+  // (usa os cards: folgas futuras por mês)
+  const linhas = [titulo, ""];
+
+  // percorre os meses e pega só dias "Folga"
+  window.dadosEscala.forEach((mesObj) => {
+    const folgas = (mesObj.dias || []).filter(d => d.tipo === "Folga");
+    if (!folgas.length) return;
+
+    linhas.push(`🟥 ${mesObj.mes}`);
+    folgas.forEach((d) => {
+      const obs = d.obs ? ` (${d.obs})` : "";
+      linhas.push(`• ${d.data} - ${d.dia}${obs}`);
+    });
+    linhas.push("");
+  });
+
+  // link do seu app (opcional)
+  linhas.push("🔗 App: https://brkgd.github.io/Calculadora-folgas-v1/");
+
+  return linhas.join("\n");
+}
+
+async function compartilharWhatsApp() {
+  const texto = gerarTextoEscalaParaCompartilhar();
+  if (!texto) {
+    showToast("Calcule a escala antes de compartilhar");
+    return;
+  }
+
+  // Web Share API (abre a janela de compartilhamento do celular)
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: "Escala de Folgas",
+        text: texto
+      });
+      showToast("Compartilhamento aberto");
+      return;
+    } catch (e) {
+      // usuário cancelou ou falhou
+      return;
+    }
+  }
+
+  // Fallback: abre WhatsApp com mensagem (quando share não existir)
+  const url = "https://wa.me/?text=" + encodeURIComponent(texto);
+  window.open(url, "_blank");
 }
 
 /* ==================================================
