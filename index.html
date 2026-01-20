@@ -74,11 +74,37 @@
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script> 
 <script>
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("service-worker.js").then((reg) => {
+    window.addEventListener("load", async () => {
+      const reg = await navigator.serviceWorker.register("./service-worker.js", {
+        updateViaCache: "none"
+      });
+
+      // tenta atualizar toda vez que abrir
       reg.update();
+
+      // se tiver SW novo "waiting", manda aplicar
+      if (reg.waiting) {
+        reg.waiting.postMessage({ type: "SKIP_WAITING" });
+      }
+
+      reg.addEventListener("updatefound", () => {
+        const newWorker = reg.installing;
+        newWorker.addEventListener("statechange", () => {
+          if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+            // tem atualização pronta -> aplica e recarrega
+            newWorker.postMessage({ type: "SKIP_WAITING" });
+          }
+        });
+      });
+
+      // quando o SW tomar controle, recarrega pra pegar arquivos novos
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+        window.location.reload();
+      });
     });
   }
 </script>
+
 <script src="script.js"></script>
 <link rel="manifest" href="manifest.json">
 
