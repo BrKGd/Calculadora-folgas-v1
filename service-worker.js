@@ -1,4 +1,4 @@
-const VERSION = "v13"; // <-- mude isso a cada release (v13, v14...)
+const VERSION = "v14"; // mude a cada release
 const CACHE_NAME = `escala-folgas-${VERSION}`;
 
 const FILES_TO_CACHE = [
@@ -12,22 +12,21 @@ const FILES_TO_CACHE = [
 ];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(FILES_TO_CACHE))
-  );
-  self.skipWaiting(); // aplica o SW novo sem esperar
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    await cache.addAll(FILES_TO_CACHE);
+  })());
+  self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.map((k) => (k !== CACHE_NAME ? caches.delete(k) : null)))
-    )
-  );
-  self.clients.claim(); // passa a controlar as páginas abertas
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.map((k) => (k !== CACHE_NAME ? caches.delete(k) : null)));
+    await self.clients.claim();
+  })());
 });
 
-// Recebe comando do site para aplicar update imediatamente
 self.addEventListener("message", (event) => {
   if (event.data && event.data.type === "SKIP_WAITING") {
     self.skipWaiting();
@@ -36,30 +35,39 @@ self.addEventListener("message", (event) => {
 
 self.addEventListener("fetch", (event) => {
   const req = event.request;
+  if (req.method !== "GET") return;
+
   const url = new URL(req.url);
 
-  // 1) SEMPRE atualizar navegação (index.html e rotas)
-  // Isso evita ficar preso em HTML antigo
+  // 1) Navegação (HTML): NETWORK FIRST (pra sempre puxar versão nova)
   if (req.mode === "navigate") {
-    event.respondWith(
-      fetch(req).catch(() => caches.match("./index.html"))
-    );
+    event.respondWith((async () => {
+      try {
+        // bypass no cache HTTP do navegador
+        return await fetch(req, { cache: "no-store" });
+      } catch (e) {
+        const cache = await caches.open(CACHE_NAME);
+        return (await cache.match("./index.html")) || Response.error();
+      }
+    })());
     return;
   }
 
-  // 2) Para arquivos do seu site: cache-first + atualiza em background
+  // 2) Arquivos do seu domínio: STALE-WHILE-REVALIDATE (cache rápido + atualiza)
   if (url.origin === self.location.origin) {
-    event.respondWith(
-      caches.match(req).then((cached) => {
-        const fetchPromise = fetch(req)
-          .then((networkRes) => {
-            caches.open(CACHE_NAME).then((cache) => cache.put(req, networkRes.clone()));
-            return networkRes;
-          })
-          .catch(() => cached);
+    event.respondWith((async () => {
+      const cache = await caches.open(CACHE_NAME);
+      const cached = await cache.match(req);
 
-        return cached || fetchPromise;
-      })
-    );
+      const fetchPromise = fetch(req)
+        .then((res) => {
+          // só salva respostas válidas
+          if (res && res.status === 200) cache.put(req, res.clone());
+          return res;
+        })
+        .catch(() => cached);
+
+      return cached || fetchPromise;
+    })());
   }
 });
