@@ -1,56 +1,65 @@
-const CACHE_NAME = "escala-folgas-v12";
-const BASE_PATH = "/Calculadora-folgas-v10/";
+const VERSION = "v12"; // <-- mude isso a cada release (v13, v14...)
+const CACHE_NAME = `escala-folgas-${VERSION}`;
 
 const FILES_TO_CACHE = [
-  BASE_PATH,
-  BASE_PATH + "index.html",
-  BASE_PATH + "style.css",
-  BASE_PATH + "script.js",
-  BASE_PATH + "manifest.json",
-  BASE_PATH + "icons/icon-192.png",
-  BASE_PATH + "icons/icon-512.png"
+  "./",
+  "./index.html",
+  "./style.css",
+  "./script.js",
+  "./manifest.json",
+  "./icons/icon-192.png",
+  "./icons/icon-512.png",
 ];
 
-// INSTALAÇÃO
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(FILES_TO_CACHE);
-    })
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(FILES_TO_CACHE))
   );
-  self.skipWaiting();
+  self.skipWaiting(); // aplica o SW novo sem esperar
 });
 
-// ATIVAÇÃO (limpa cache antigo)
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
-      )
-    )
-  );
-  self.clients.claim();
-});
-
-// FETCH (offline first)
-self.addEventListener("fetch", (event) => {
-  event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      return cachedResponse || fetch(event.request);
-    })
-  );
-});
-
-self.addEventListener("activate", (e) => {
-  e.waitUntil(
     caches.keys().then((keys) =>
       Promise.all(keys.map((k) => (k !== CACHE_NAME ? caches.delete(k) : null)))
     )
   );
-  self.clients.claim();
+  self.clients.claim(); // passa a controlar as páginas abertas
+});
+
+// Recebe comando do site para aplicar update imediatamente
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
+});
+
+self.addEventListener("fetch", (event) => {
+  const req = event.request;
+  const url = new URL(req.url);
+
+  // 1) SEMPRE atualizar navegação (index.html e rotas)
+  // Isso evita ficar preso em HTML antigo
+  if (req.mode === "navigate") {
+    event.respondWith(
+      fetch(req).catch(() => caches.match("./index.html"))
+    );
+    return;
+  }
+
+  // 2) Para arquivos do seu site: cache-first + atualiza em background
+  if (url.origin === self.location.origin) {
+    event.respondWith(
+      caches.match(req).then((cached) => {
+        const fetchPromise = fetch(req)
+          .then((networkRes) => {
+            caches.open(CACHE_NAME).then((cache) => cache.put(req, networkRes.clone()));
+            return networkRes;
+          })
+          .catch(() => cached);
+
+        return cached || fetchPromise;
+      })
+    );
+  }
 });
