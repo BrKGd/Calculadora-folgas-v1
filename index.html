@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#d52b1e">
+  <title>Calendário de Folgas</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+  <h1>Calculadora de Folgas</h1>
+  
+  <div class="linha-campos">
+  <div class="campo-data">
+    <label>Data inicial da folga:</label>
+    <input type="date" id="dataFolga">
+  </div>
+
+  <div class="campo-meses">
+    <label>Quantidade de meses:</label>
+    <select id="qtdMeses">
+      <option value="" disabled selected>Selecione a quantidade de meses</option>
+      <option value="1">1 mês</option>
+      <option value="2">2 meses</option>
+      <option value="3">3 meses</option>
+      <option value="4">4 meses</option>
+      <option value="5">5 meses</option>
+      <option value="6">6 meses</option>
+      <option value="7">7 meses</option>
+      <option value="8">8 meses</option>
+      <option value="9">9 meses</option>
+      <option value="10">10 meses</option>
+      <option value="11">11 meses</option>
+      <option value="12">12 meses</option>
+    </select>
+  </div>
+</div>
+  <div class="campo-escala">
+  <label>Tipo de escala:</label>
+  <select id="tipoEscala">
+    <option value="" disabled selected>Selecione o tipo de escala</option>
+    <option value="6x2">6x2 – 6 dias trabalho / 2 folga</option>
+    <option value="6x1">6x1 – 6 dias trabalho / 1 folga</option>
+    <option value="5x2">5x2 – Segunda a Sexta</option>
+    <option value="12x36">12x36 – Dia sim, dia não</option>
+    <option value="4x2">4x2 – 4 dias trabalho / 2 folga</option>
+  </select>
+</div>
+
+  
+  <div class="acoes">
+  <button id="btnExcel" type="button" onclick="exportarExcel()" class="hidden">
+    Exportar Excel
+  </button>
+  <button id="btnPDF" type="button" onclick="exportarPDF()" class="hidden">
+    Exportar PDF
+  </button>
+  <button type="button" onclick="calcular()">Calcular</button>
+  </div>
+
+  <h2 id="tituloFolgas" class="hidden">Próximas folgas</h2>
+  <div id="cardsMeses" class="hidden"></div>
+
+  <h2 id="tituloCalendario" class="hidden">Calendário</h2>
+  <div id="calendario" class="hidden"></div>
+  
+</div>
+<!-- Excel -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<!-- PDF -->
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script> 
+<script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js");
+  }
+</script>
+<script src="script.js"></script>
+</body>
+</html>
