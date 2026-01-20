@@ -1,7 +1,7 @@
 {
   "name": "Escala de Folgas",
   "short_name": "Escala",
-  "start_url": "calendario.html",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#d52b1e",
