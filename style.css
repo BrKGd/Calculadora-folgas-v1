@@ -248,21 +248,28 @@ button:hover {
   background: transparent;
 }
 
+/* =========================
+   DIA ATUAL – AJUSTE VISUAL
+   ========================= */
+
 .dia.hoje {
-  outline: 2px solid #c62828;
+  background: #c62828;
+  color: #fff;
+  font-weight: 700;
   position: relative;
 }
 
 .dia.hoje::after {
   content: "HOJE";
   position: absolute;
-  top: -6px;
-  right: -6px;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
   background: #c62828;
   color: #fff;
   font-size: 9px;
   padding: 2px 6px;
-  border-radius: 6px;
+  border-radius: 999px;
 }
 
 /* ==================================================
@@ -293,55 +300,38 @@ button:hover {
 /* ==================================================
    RESPONSIVO
    ================================================== */
+/* =========================
+   BOTÕES – AJUSTE MOBILE
+   ========================= */
 
-/* MOBILE */
 @media (max-width: 768px) {
 
-  .container {
-    margin: 12px;
-    padding: 16px;
-  }
-
-  h1 {
-    font-size: 22px;
-  }
-
-  h2 {
-    font-size: 18px;
-  }
-
-  .linha-campos {
-    flex-direction: column;
-    gap: 14px;
-  }
-
   .acoes {
+    display: flex;
     flex-direction: column;
+    gap: 10px;
   }
 
-  #cardsMeses {
-    grid-template-columns: 1fr;
+  /* Botão principal */
+  .acoes button:last-child {
+    height: 52px;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 14px;
   }
 
-  #calendario {
-    grid-template-columns: 1fr;
-  }
-
-  .dia {
-    height: 42px;
-    line-height: 42px;
+  /* Botões secundários (Exportar) */
+  #btnExcel,
+  #btnPDF {
+    height: 44px;
     font-size: 14px;
-  }
-}
-
-/* TABLET */
-@media (min-width: 769px) and (max-width: 1024px) {
-
-  #cardsMeses {
-    grid-template-columns: repeat(2, 1fr);
+    background: #e0e0e0;
+    color: #c62828;
+    font-weight: 600;
   }
 
-  #calendario {
-    grid-template-columns: repeat(2, 1fr);
+  #btnExcel:hover,
+  #btnPDF:hover {
+    background: #d6d6d6;
   }
 }
