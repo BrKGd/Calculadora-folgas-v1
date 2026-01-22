@@ -50,20 +50,19 @@
   </select>
 </div>
 
-  <div class="acoes">
+<div class="acoes">
   <button type="button" onclick="calcular()" class="btn-calcular">Calcular</button>
-
-  <button id="btnExcel" type="button" onclick="exportarExcel()" class="btn-icone hidden" aria-label="Exportar Excel" title="Exportar Excel">
-    <img src="icons/saveExcel.png" alt="">
-  </button>
-
-  <button id="btnPDF" type="button" onclick="exportarPDF()" class="btn-icone hidden" aria-label="Exportar PDF" title="Exportar PDF">
-    <img src="icons/savePdf.png" alt="">
-  </button>
-
-  <button id="btnShare" type="button" onclick="compartilharWhatsApp()" class="btn-icone hidden" aria-label="Compartilhar" title="Compartilhar">
-    <img src="icons/saveCompartilhar.png" alt="">
-  </button>
+</div>   
+<div class="acoes">
+  <a class="menu-item hidden" id="btnExcel">
+  <img src="icons/saveExcel.png" onclick="exportarExcel()" title="Exportar Excel">
+  </a>
+  <a class="menu-item hidden" id="btnPDF">
+  <img src="icons/savePdf.png" onclick="exportarPDF()" title="Exportar PDF">
+  </a>
+  <a class="menu-item hidden" id="btnShare">
+  <img src="icons/saveCompartilhar.png" onclick="compartilharWhatsApp()" class="btn-icone hidden">
+  </a>
 </div>
 
 
