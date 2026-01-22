@@ -963,7 +963,7 @@ LINHA DE FOLGA (CARD)
   position: absolute;
   top: -8px;                 /* flutua acima da linha */
   right: 0px;                /* alinhada à direita (data) */
-  height: 15px;
+  height: auto;
   background: #c62828;
   color: #fff;
   padding: 1px 10px 0px 10px;
