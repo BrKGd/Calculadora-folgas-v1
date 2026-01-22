@@ -425,7 +425,6 @@ select {
   gap: 12px;
   margin-top: 16px;
 }
-
 /* Calcular permanece normal */
 .btn-calcular {
   height: 54px;
@@ -438,35 +437,46 @@ select {
   font-weight: 700;
   cursor: pointer;
 }
-
+.menu-item {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--azul);
+  color: var(--branco);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  text-decoration: none;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  transition: 0.25s;
+}
 /* Botão-ícone: fica “só o ícone” */
-.btn-icone {
-  width: 54px;
-  height: 54px;
+.menu-item img{
+  width: 30px;
+  height: 30px;
   border: none;
-  background: transparent;
-  padding: 0;
+  background: none;
   display: inline-flex;
   align-items: center;   /* centraliza vertical */
   justify-content: center; /* centraliza horizontal dentro do quadrado */
   cursor: pointer;
 }
-
-.btn-icone:hover {
-  box-shadow: 0 10px 24px rgba(0,0,0,0.10);
-  transform: scale(1.2);
+.menu-item:hover {
+  background: var(--azul-claro);
+  transform: scale(1.08);
+  border: solid 3px #1565c0;
 }
 
-.btn-icone img {
-  width: 26px;
-  height: 26px;
-  display: block;
-  object-fit: contain;
+/* Destaque visual opcional */
+.menu-item.ativo {
+  background: var(--amarelo-ypetro);
+  border: 3px solid var(--branco);
 }
 
 /* Feedback leve ao clicar */
-.btn-icone:active {
-  transform: scale(0.96);
+.menu-item:active {
+  transform: scale(.96);
 }
 
 /* MOBILE: se precisar quebrar linha */
