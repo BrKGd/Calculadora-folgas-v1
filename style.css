@@ -914,7 +914,7 @@ display: flex;
 align-items: center;
 justify-content: space-between;
 gap: 0px;
-margin: 8.5px;
+margin: 10px;
 padding: 0px 5px;
 border-radius: 10px;
 background: #fafafa;
@@ -961,7 +961,7 @@ LINHA DE FOLGA (CARD)
 /*Observação Flutuante*/
 .obs-folga {
   position: absolute;
-  top: -8px;                 /* flutua acima da linha */
+  top: -9px;                 /* flutua acima da linha */
   right: 0px;                /* alinhada à direita (data) */
   height: auto;
   background: #c62828;
