@@ -111,12 +111,19 @@ function calcular() {
     const diasDiv = document.createElement("div");
     diasDiv.className = "mes-dias";
     diasDiv.innerHTML = folgasFuturas
-    .map(f => `
-      <div>
-        <strong>${primeiraLetraMaiuscula(f.data.toLocaleDateString("pt-BR", { weekday: "long" }))}</strong>
-        <span>${formatar(f.data)}</span>
-      </div>
-    `)
+    .map(f => {
+      const diaSemana = primeiraLetraMaiuscula(f.data.toLocaleDateString("pt-BR", { weekday: "long" }));
+      const dataFmt = formatar(f.data);
+      return `
+        <div class="linha-folga">
+          <strong>${diaSemana}</strong>
+          <div class="info-direita">
+            ${f.obs? `<span class="obs-folga feriado" ${f.obs === "HOJE" ? "hoje" : "feriado"}">${f.obs}</span>`: ""}
+            <span class="data-folga">${dataFmt}</span>
+          </div>
+        </div>
+      `;
+    })
     .join("");
   
     header.onclick = () => card.classList.toggle("ativo");
@@ -221,7 +228,7 @@ async function compartilharWhatsApp() {
   window.open(url, "_blank");
 }
 
-/*--- CALENDÁRIO ---*/
+/*--- Calendário ---*/
 function gerarCalendarioMes(dataMes, hoje, container, isFolga) {
   const ano = dataMes.getFullYear();
   const mes = dataMes.getMonth();
@@ -260,8 +267,7 @@ function gerarCalendarioMes(dataMes, hoje, container, isFolga) {
   container.appendChild(bloco);
 }
 
-/*EXPORTAR CSV (EXCEL)|*/
-
+/*Exportar CSV (Excel)|*/
 function exportarExcel() {
   if (!window.dadosEscala.length) {
     showToast("Calcule a escala primeiro");
