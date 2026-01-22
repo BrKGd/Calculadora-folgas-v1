@@ -111,9 +111,14 @@ function calcular() {
     const diasDiv = document.createElement("div");
     diasDiv.className = "mes-dias";
     diasDiv.innerHTML = folgasFuturas
-      .map(f => `• ${primeiraLetraMaiuscula(formatar(f.data))} ${f.obs ? `(${f.obs})` : ""}`)
-      .join("<br>");
-
+    .map(f => `
+      <div>
+        <strong>${primeiraLetraMaiuscula(f.data.toLocaleDateString("pt-BR", { weekday: "long" }))}</strong>
+        <span>${formatar(f.data)}</span>
+      </div>
+    `)
+    .join("");
+  
     header.onclick = () => card.classList.toggle("ativo");
 
     card.appendChild(header);
@@ -543,7 +548,7 @@ function exportarPDF() {
   }
   showToast("PDF Gerado: " + nomeArquivo);
 }
-   
+  
 /* Toast */
 function showToast(msg) {
   let t = document.querySelector(".toast");
@@ -586,7 +591,6 @@ function mod(n, m) {
 
 function formatar(d) {
   return d.toLocaleDateString("pt-BR", {
-    weekday: "long",
     day: "2-digit",
     month: "2-digit",
     year: "numeric"
