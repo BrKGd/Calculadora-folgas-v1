@@ -392,8 +392,9 @@ button:hover {
    ========================= */
 
 .linha-campos {
-  display: flex;
+  display: grid;
   gap: 14px;
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .campo-data {
@@ -436,6 +437,12 @@ select {
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
+}
+.cabecalho-lista {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 16px;
 }
 .menu-item {
   width: 50px;
