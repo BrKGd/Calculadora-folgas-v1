@@ -1,4 +1,4 @@
-const VERSION = "v34"; // <-- mude a cada release
+const VERSION = "v35"; // <-- mude a cada release
 const CACHE_NAME = `escala-folgas-${VERSION}`;
 
 const FILES_TO_CACHE = [
