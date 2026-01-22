@@ -815,4 +815,57 @@ select {
   .linha-campos > div {
     width: 100%;
   }
+
+  label {
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  input,
+  select {
+    height: 56px;
+    font-size: 16px; /* evita zoom no iOS */
+    border-radius: 14px;
+  }
+
+  .cabecalho-lista {
+    align-items: center;
+  }
+
+  .cabecalho-lista h2 {
+    font-size: 18px;
+  }
+
+  .cabecalho-lista .menu-item {
+    width: 44px;
+    height: 44px;
+  }
+
+  .cabecalho-lista .menu-item img {
+    width: 24px;
+    height: 24px;
+  } 
+}
+
+/* =========================
+TÍTULO + AÇÕES ALINHADOS
+========================= */
+.cabecalho-lista {
+display: flex;
+align-items: center;        /* alinha verticalmente */
+justify-content: space-between;
+gap: 12px;
+margin-top: 24px;
+}
+
+/* remove margem padrão do h2 dentro do cabeçalho */
+.cabecalho-lista h2 {
+margin: 0;
+}
+
+/* ações ficam em linha */
+.cabecalho-lista .acoes {
+display: flex;
+gap: 10px;
+margin: 0;
 }
