@@ -849,12 +849,6 @@ height: auto;
 .linha-folga {
   border: 1px solid #c62828;
 }
-/* dia da semana */
-.mes-dias strong {
-color: #c62828;
-font-weight: 600;
-}
-
 /* =========================
 LINHA DE FOLGA (CARD)
 ========================= */
@@ -871,7 +865,7 @@ LINHA DE FOLGA (CARD)
 
 /* lado esquerdo */
 .linha-folga strong {
-  color: #c62828;
+  color: #1565c0;
   font-weight: 600;
   font-size: 14px;
   text-transform: capitalize;
@@ -968,17 +962,12 @@ align-items: flex-end;
   .linha-folga {
     padding: 12px 14px;
   }
-
-  .linha-folga strong {
-    font-size: 15px;
-  }
-
   .data-folga {
     font-size: 14px;
   }
 
   .obs-folga {
-    font-size: 8px;
+    font-size: 9px;
   }
 }
   
