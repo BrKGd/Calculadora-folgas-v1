@@ -111,7 +111,7 @@ function calcular() {
     const diasDiv = document.createElement("div");
     diasDiv.className = "mes-dias";
     diasDiv.innerHTML = folgasFuturas
-      .map(f => `• ${formatar(f.data)} ${f.obs ? `(${f.obs})` : ""}`)
+      .map(f => `• ${primeiraLetraMaiuscula(formatar(f.data))} ${f.obs ? `(${f.obs})` : ""}`)
       .join("<br>");
 
     header.onclick = () => card.classList.toggle("ativo");
@@ -255,9 +255,7 @@ function gerarCalendarioMes(dataMes, hoje, container, isFolga) {
   container.appendChild(bloco);
 }
 
-/* ==================================================
-   EXPORTAR CSV (EXCEL)
-   ================================================== */
+/*EXPORTAR CSV (EXCEL)|*/
 
 function exportarExcel() {
   if (!window.dadosEscala.length) {
@@ -558,11 +556,7 @@ function showToast(msg) {
   t.classList.add("show");
   setTimeout(() => t.classList.remove("show"), 3000);
 }
-
-/* ==================================================
-   UTILITÁRIOS
-   ================================================== */
-
+/* |UTILITÁRIOS| */
 function obterEscala(c) {
   return {
     "6x1": { diasTrabalho: 6, diasFolga: 1 },
