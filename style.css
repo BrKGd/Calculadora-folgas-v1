@@ -796,82 +796,6 @@ select {
   flex: 1;
 }
 
-
-@media (max-width: 600px) {
-  .acoes {
-    gap: 10px;
-  }
-
-  .acoes button {
-    height: 54px;
-    font-size: 16px;
-    border-radius: 16px;
-  }
-  .linha-campos {
-    grid-template-columns: 1fr; /* uma coluna */
-    gap: 16px;
-  }
-
-  .linha-campos > div {
-    width: 100%;
-  }
-
-  label {
-    font-size: 14px;
-    margin-bottom: 6px;
-  }
-
-  input,
-  select {
-    height: 56px;
-    font-size: 16px; /* evita zoom no iOS */
-    border-radius: 14px;
-  }
-
-  .cabecalho-lista {
-    align-items: center;
-  }
-
-  .cabecalho-lista h2 {
-    font-size: 18px;
-  }
-
-  .cabecalho-lista .menu-item {
-    width: 44px;
-    height: 44px;
-  }
-
-  .cabecalho-lista .menu-item img {
-    width: 24px;
-    height: 24px;
-  }
-  .mes-dias div,
-  .mes-dias p {
-    font-size: 14px;
-    padding: 10px 12px;
-  }
-
-  .mes-dias span {
-    font-size: 13px;
-  }
-
-  .linha-folga {
-    padding: 12px 14px;
-  }
-
-  .linha-folga strong {
-    font-size: 15px;
-  }
-
-  .data-folga {
-    font-size: 14px;
-  }
-
-  .obs-folga {
-    font-size: 8px;
-  }
-}
-
 /* =========================
 TÍTULO + AÇÕES ALINHADOS
 ========================= */
@@ -929,14 +853,6 @@ height: auto;
 .mes-dias strong {
 color: #c62828;
 font-weight: 600;
-}
-.mes-dias span .badge-obs{
-  font-size: 8px;
-  color: white;
-  justify-content: flex-end;
-  background-color: #c62828;
-  border-radius: 15%;
-  padding: 5px;
 }
 
 /* =========================
@@ -998,6 +914,71 @@ align-items: flex-end;
   .mes-dias div:hover,
   .mes-dias p:hover {
     background: #f5f5f5;
+  }
+}
+
+@media (max-width: 600px) {
+  .acoes {
+    gap: 10px;
+  }
+
+  .acoes button {
+    height: 54px;
+    font-size: 16px;
+    border-radius: 16px;
+  }
+  .linha-campos {
+    grid-template-columns: 1fr; /* uma coluna */
+    gap: 16px;
+  }
+
+  .linha-campos > div {
+    width: 100%;
+  }
+
+  label {
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  input,
+  select {
+    height: 56px;
+    font-size: 16px; /* evita zoom no iOS */
+    border-radius: 14px;
+  }
+
+  .cabecalho-lista {
+    align-items: center;
+  }
+
+  .cabecalho-lista h2 {
+    font-size: 18px;
+  }
+
+  .cabecalho-lista .menu-item {
+    width: 44px;
+    height: 44px;
+  }
+
+  .cabecalho-lista .menu-item img {
+    width: 24px;
+    height: 24px;
+  }
+  .linha-folga {
+    padding: 12px 14px;
+  }
+
+  .linha-folga strong {
+    font-size: 15px;
+  }
+
+  .data-folga {
+    font-size: 14px;
+  }
+
+  .obs-folga {
+    font-size: 8px;
   }
 }
   
