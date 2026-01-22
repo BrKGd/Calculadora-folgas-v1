@@ -216,10 +216,7 @@ async function compartilharWhatsApp() {
   window.open(url, "_blank");
 }
 
-/* ==================================================
-   CALENDÁRIO
-   ================================================== */
-
+/*--- CALENDÁRIO ---*/
 function gerarCalendarioMes(dataMes, hoje, container, isFolga) {
   const ano = dataMes.getFullYear();
   const mes = dataMes.getMonth();
@@ -341,15 +338,7 @@ function exportarPDF() {
       ? `Calendário de folgas de ${mesInicio} a ${mesFim} de ${anoInicio}`
       : `Calendário de folgas de ${mesInicio}/${anoInicio} a ${mesFim}/${anoFim}`;
 
-  // ===== UI: evita travar / clique duplo =====
-  const btn = document.getElementById("btnPDF");
-  const oldText = btn?.textContent;
-  if (btn) {
-    btn.disabled = true;
-    btn.style.opacity = "0.75";
-    btn.textContent = "Gerando PDF...";
-  }
-  showToast("Gerando PDF...");
+  showToast("PDF Gerado!...");
 
   // ===== PDF (leve) =====
   const doc = new jsPDF({ orientation: "p", unit: "mm", format: "a4" });
