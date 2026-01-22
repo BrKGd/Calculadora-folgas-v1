@@ -854,6 +854,22 @@ select {
   .mes-dias span {
     font-size: 13px;
   }
+
+  .linha-folga {
+    padding: 12px 14px;
+  }
+
+  .linha-folga strong {
+    font-size: 15px;
+  }
+
+  .data-folga {
+    font-size: 14px;
+  }
+
+  .obs-folga {
+    font-size: 11px;
+  }
 }
 
 /* =========================
@@ -879,52 +895,105 @@ gap: 10px;
 margin: 0;
 }
 /* =========================
-   LISTA DE FOLGAS NOS CARDS
-   ========================= */
+LISTA DE FOLGAS NOS CARDS
+========================= */
 
-   .mes-dias {
-    margin-top: 12px;
-    padding-top: 10px;
-    border-top: 1px dashed #eee;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+.mes-dias {
+margin-top: 12px;
+padding-top: 10px;
+border-top: 1px dashed #eee;
+display: flex;
+flex-direction: column;
+gap: 8px;
+}
+
+/* cada linha */
+.mes-dias div,
+.mes-dias p {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 0px;
+margin: 8.5px;
+padding: 0px 5px;
+border-radius: 10px;
+background: #fafafa;
+border:solid 1px #c62828;
+font-size: 13px;
+color: #333;
+height: auto;
+}
+/* dia da semana */
+.mes-dias strong {
+color: #c62828;
+font-weight: 600;
+}
+.mes-dias span .badge-obs{
+  font-size: 8px;
+  color: white;
+  justify-content: flex-end;
+  background-color: #c62828;
+  border-radius: 15%;
+  padding: 5px;
+}
+
+/* =========================
+LINHA DE FOLGA (CARD)
+========================= */
+
+.linha-folga {
+  position: relative; /* 🔑 base do pop-up */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 12px 10px;
+  border-radius: 12px;
+  background: #fafafa;
+}
+
+/* lado esquerdo */
+.linha-folga strong {
+  color: #c62828;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: capitalize;
+}
+/*Observação Flutuante*/
+.obs-folga {
+  position: absolute;
+  top: -8px;                 /* flutua acima da linha */
+  right: 0px;                /* alinhada à direita (data) */
+  height: 15px;
+  background: #c62828;
+  color: #fff;
+  padding: 1px 10px 0px 10px;
+  border-radius: 999px;
+  font-size: 8px;
+  font-weight: 600;
+  white-space: nowrap;
+  z-index: 2;
+}
+/* variações */
+.obs-folga.hoje {
+  background: #b71c1c;
+}
+/* garante alinhamento correto no container direito */
+.info-direita {
+display: flex;
+flex-direction: column;
+align-items: flex-end;
+}
+
+/* data */
+.data-folga {
+  font-size: 13px;
+  border: none;
+}
+/* efeito hover (desktop) */
+@media (hover: hover) {
+  .mes-dias div:hover,
+  .mes-dias p:hover {
+    background: #f5f5f5;
   }
-  
-  /* cada linha */
-  .mes-dias div,
-  .mes-dias p {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-  
-    padding: 8px 10px;
-    border-radius: 10px;
-    background: #fafafa;
-  
-    font-size: 13px;
-    color: #333;
-  }
-  
-  /* dia da semana */
-  .mes-dias strong {
-    color: #c62828;
-    font-weight: 600;
-  }
-  
-  /* data */
-  .mes-dias span {
-    font-size: 12px;
-    color: #666;
-    white-space: nowrap;
-  }
-  
-  /* efeito hover (desktop) */
-  @media (hover: hover) {
-    .mes-dias div:hover,
-    .mes-dias p:hover {
-      background: #f5f5f5;
-    }
-  }
+}
   
