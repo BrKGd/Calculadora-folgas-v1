@@ -868,7 +868,7 @@ select {
   }
 
   .obs-folga {
-    font-size: 11px;
+    font-size: 8px;
   }
 }
 
@@ -914,14 +914,16 @@ display: flex;
 align-items: center;
 justify-content: space-between;
 gap: 0px;
-margin: 10px;
+margin: 8.5px;
 padding: 0px 5px;
 border-radius: 10px;
 background: #fafafa;
-border:solid 1px #c62828;
 font-size: 13px;
 color: #333;
 height: auto;
+}
+.linha-folga {
+  border: 1px solid #c62828;
 }
 /* dia da semana */
 .mes-dias strong {
@@ -961,7 +963,7 @@ LINHA DE FOLGA (CARD)
 /*Observação Flutuante*/
 .obs-folga {
   position: absolute;
-  top: -9px;                 /* flutua acima da linha */
+  top: -8px;                 /* flutua acima da linha */
   right: 0px;                /* alinhada à direita (data) */
   height: auto;
   background: #c62828;
@@ -984,10 +986,12 @@ flex-direction: column;
 align-items: flex-end;
 }
 
-/* data */
+/* data da folga – sem borda nem fundo */
 .data-folga {
   font-size: 13px;
-  border: none;
+  border: none !important;
+  background: transparent !important;
+  padding: 0;
 }
 /* efeito hover (desktop) */
 @media (hover: hover) {
