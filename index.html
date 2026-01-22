@@ -14,58 +14,58 @@
   <h1>Calculadora de Folgas</h1>
   
   <div class="linha-campos">
-  <div class="campo-data">
-    <label>Data inicial da folga:</label>
-    <input type="date" id="dataFolga">
+    <div class="campo-data">
+      <label>Data inicial da folga:</label>
+      <input type="date" id="dataFolga">
+    </div>
+    <div class="campo-meses">
+      <label>Quantidade de meses:</label>
+      <select id="qtdMeses">
+        <option value="" disabled selected>Selecione a quantidade de meses</option>
+        <option value="1">1 mês</option>
+        <option value="2">2 meses</option>
+        <option value="3">3 meses</option>
+        <option value="4">4 meses</option>
+        <option value="5">5 meses</option>
+        <option value="6">6 meses</option>
+        <option value="7">7 meses</option>
+        <option value="8">8 meses</option>
+        <option value="9">9 meses</option>
+        <option value="10">10 meses</option>
+        <option value="11">11 meses</option>
+        <option value="12">12 meses</option>
+      </select>
+    </div>
+    <div class="campo-escala">
+      <label>Tipo de escala:</label>
+      <select id="tipoEscala">
+        <option value="" disabled selected>Selecione o tipo de escala</option>
+        <option value="6x2">6x2 – 6 dias trabalho / 2 folga</option>
+        <option value="6x1">6x1 – 6 dias trabalho / 1 folga</option>
+        <option value="5x2">5x2 – Segunda a Sexta</option>
+        <option value="12x36">12x36 – Dia sim, dia não</option>
+        <option value="4x2">4x2 – 4 dias trabalho / 2 folga</option>
+      </select>
+    </div>
   </div>
-
-  <div class="campo-meses">
-    <label>Quantidade de meses:</label>
-    <select id="qtdMeses">
-      <option value="" disabled selected>Selecione a quantidade de meses</option>
-      <option value="1">1 mês</option>
-      <option value="2">2 meses</option>
-      <option value="3">3 meses</option>
-      <option value="4">4 meses</option>
-      <option value="5">5 meses</option>
-      <option value="6">6 meses</option>
-      <option value="7">7 meses</option>
-      <option value="8">8 meses</option>
-      <option value="9">9 meses</option>
-      <option value="10">10 meses</option>
-      <option value="11">11 meses</option>
-      <option value="12">12 meses</option>
-    </select>
-  </div>
-</div>
-  <div class="campo-escala">
-  <label>Tipo de escala:</label>
-  <select id="tipoEscala">
-    <option value="" disabled selected>Selecione o tipo de escala</option>
-    <option value="6x2">6x2 – 6 dias trabalho / 2 folga</option>
-    <option value="6x1">6x1 – 6 dias trabalho / 1 folga</option>
-    <option value="5x2">5x2 – Segunda a Sexta</option>
-    <option value="12x36">12x36 – Dia sim, dia não</option>
-    <option value="4x2">4x2 – 4 dias trabalho / 2 folga</option>
-  </select>
-</div>
 
 <div class="acoes">
   <button type="button" onclick="calcular()" class="btn-calcular">Calcular</button>
 </div>   
-<div class="acoes">
-  <a class="menu-item hidden" id="btnExcel">
-  <img src="icons/saveExcel.png" onclick="exportarExcel()" title="Exportar Excel">
-  </a>
-  <a class="menu-item hidden" id="btnPDF">
-  <img src="icons/savePdf.png" onclick="exportarPDF()" title="Exportar PDF">
-  </a>
-  <a class="menu-item hidden" id="btnShare">
-  <img src="icons/saveCompartilhar.png" onclick="compartilharWhatsApp()" title="Compartilhar">
-  </a>
+<div class="cabecalho-lista">
+  <h2 id="tituloFolgas" class="hidden">Próximas folgas</h2>
+  <div class="acoes">
+    <a class="menu-item hidden" id="btnExcel">
+    <img src="icons/saveExcel.png" onclick="exportarExcel()" title="Exportar Excel">
+    </a>
+    <a class="menu-item hidden" id="btnPDF">
+    <img src="icons/savePdf.png" onclick="exportarPDF()" title="Exportar PDF">
+    </a>
+    <a class="menu-item hidden" id="btnShare">
+    <img src="icons/saveCompartilhar.png" onclick="compartilharWhatsApp()" title="Compartilhar">
+    </a>
+  </div>
 </div>
-
-
 
   <h2 id="tituloFolgas" class="hidden">Próximas folgas</h2>
   <div id="cardsMeses" class="hidden"></div>
