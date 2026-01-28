@@ -25,11 +25,8 @@ const FERIADOS_NACIONAIS_FIXOS = {
 
 window.dadosEscala = [];
 
-/* ==================================================
-   FUNÇÃO PRINCIPAL
-   ================================================== */
-
-function calcular() {
+/* FUNÇÃO PRINCIPAL */
+  function calcular() {
   const dataInput = document.getElementById("dataFolga").value;
   const mesesSelect = document.getElementById("qtdMeses").value;
   const tipoEscalaRaw = document.getElementById("tipoEscala").value;
@@ -61,16 +58,17 @@ function calcular() {
     return mod(diff, ciclo) < escala.diasFolga;
   };
 
+  // --- PRIMEIRO LOOP: Cards de folgas por mês ---
   for (let m = 0; m < meses; m++) {
-    const dataMes = new Date(dataBase);
-    dataMes.setMonth(dataBase.getMonth() + m);
+    // CORREÇÃO: Usar o dia 1 do mês para evitar saltos acidentais (ex: 31/jan indo para março)
+    const dataReferenciaMes = new Date(dataBase.getFullYear(), dataBase.getMonth() + m, 1);
 
-    const ano = dataMes.getFullYear();
-    const mes = dataMes.getMonth();
+    const ano = dataReferenciaMes.getFullYear();
+    const mes = dataReferenciaMes.getMonth();
     const ultimoDia = new Date(ano, mes + 1, 0).getDate();
 
     const nomeMes = primeiraLetraMaiuscula(
-      dataMes.toLocaleDateString("pt-BR", { month: "long", year: "numeric" })
+      dataReferenciaMes.toLocaleDateString("pt-BR", { month: "long", year: "numeric" })
     );
 
     const registroMes = { mes: nomeMes, dias: [] };
@@ -133,12 +131,14 @@ function calcular() {
     containerMeses.appendChild(card);
   }
 
+  // --- SEGUNDO LOOP: Gerar calendários visuais ---
   for (let m = 0; m < meses; m++) {
-    const d = new Date(dataBase);
-    d.setMonth(dataBase.getMonth() + m);
-    gerarCalendarioMes(d, hoje, calendario, isFolga);
+    // CORREÇÃO: Aplicada também aqui para consistência visual
+    const dataReferenciaCalendario = new Date(dataBase.getFullYear(), dataBase.getMonth() + m, 1);
+    gerarCalendarioMes(dataReferenciaCalendario, hoje, calendario, isFolga);
   }
 
+  // Mostrar elementos ocultos
   document.getElementById("tituloFolgas").classList.remove("hidden");
   document.getElementById("cardsMeses").classList.remove("hidden");
   document.getElementById("tituloCalendario").classList.remove("hidden");
@@ -147,7 +147,6 @@ function calcular() {
   document.getElementById("btnPDF").classList.remove("hidden");
   document.getElementById("btnShare").classList.remove("hidden");
   document.getElementById("btnShare").classList.add("fade-in");
-
 
   showToast("Escala calculada");
 }
